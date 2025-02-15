@@ -1,142 +1,169 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGameStore } from '../store/gameStore';
-import { Users, UserPlus, ArrowRight, Sparkles } from 'lucide-react';
-import { createRoom, joinRoom } from '../lib/supabase';
+import { Users, ArrowRight, Sparkles } from 'lucide-react';
+import { useGame } from '../contexts/GameContext';
+import { supabase } from '../lib/supabase';
+import { generateRoomCode } from '../lib/utils';
 
-export const Home: React.FC = () => {
+export default function Home() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [roomId, setRoomId] = useState('');
-  const [password, setPassword] = useState('');
+  const { setPlayerName, setRoomCode } = useGame();
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
   const [error, setError] = useState('');
-  const setCurrentUser = useGameStore((state) => state.setCurrentUser);
 
-  const handleCreateRoom = async () => {
-    if (!username || !password) {
-      setError('Please enter both username and password');
+  async function createRoom() {
+    if (!name.trim()) {
+      setError('Please enter your name');
       return;
     }
-    
-    try {
-      const userId = Math.random().toString(36).substr(2, 9);
-      setCurrentUser({
-        id: userId,
-        username,
-        isGuest: false
-      });
-      
-      const room = await createRoom(userId, password);
-      navigate(`/game/${room.id}`);
-    } catch (err) {
+
+    const roomCode = generateRoomCode();
+    const { data: room, error: roomError } = await supabase
+      .from('rooms')
+      .insert([{ code: roomCode }])
+      .select()
+      .single();
+
+    if (roomError || !room) {
       setError('Failed to create room');
-    }
-  };
-
-  const handleJoinRoom = async () => {
-    if (!username || !password || !roomId) {
-      setError('Please fill in all fields');
       return;
     }
 
-    try {
-      const userId = Math.random().toString(36).substr(2, 9);
-      setCurrentUser({
-        id: userId,
-        username,
-        isGuest: false
-      });
-      
-      await joinRoom(roomId, password, userId);
-      navigate(`/game/${roomId}`);
-    } catch (err) {
-      setError('Invalid room ID or password');
+    const { error: playerError } = await supabase
+      .from('players')
+      .insert([{ room_id: room.id, name }]);
+
+    if (playerError) {
+      setError('Failed to create player');
+      return;
     }
-  };
+
+    setPlayerName(name);
+    setRoomCode(roomCode);
+    navigate(`/waiting/${room.id}`);
+  }
+
+  async function joinRoom() {
+    if (!name.trim() || !code.trim()) {
+      setError('Please enter your name and room code');
+      return;
+    }
+
+    const { data: room, error: roomError } = await supabase
+      .from('rooms')
+      .select()
+      .eq('code', code.toUpperCase())
+      .single();
+
+    if (roomError || !room) {
+      setError('Invalid room code');
+      return;
+    }
+
+    const { error: playerError } = await supabase
+      .from('players')
+      .insert([{ room_id: room.id, name }]);
+
+    if (playerError) {
+      setError('Failed to join room');
+      return;
+    }
+
+    setPlayerName(name);
+    setRoomCode(code.toUpperCase());
+    navigate(`/game/${room.id}`);
+  }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center">
-      <div className="w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8 space-y-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl p-3">
-                  <Users className="h-12 w-12 text-white" />
-                </div>
-                <Sparkles className="h-6 w-6 text-pink-400 absolute -top-2 -right-2 animate-pulse" />
-              </div>
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent mb-2">
-              Welcome to Sync&Chat
-            </h1>
-            <p className="text-white/80">
-              Break the ice and spark meaningful conversations
-            </p>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2900')] opacity-10 mix-blend-overlay"></div>
+      </div>
+
+      {/* Floating shapes */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+
+      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-8 w-full max-w-md shadow-2xl relative z-10 border border-white/20">
+        <div className="flex items-center justify-center mb-8">
+          <div className="relative">
+            <Users className="w-16 h-16 text-indigo-600" />
+            <Sparkles className="w-6 h-6 text-yellow-400 absolute -top-2 -right-2 animate-pulse" />
+          </div>
+          <h1
+            className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ml-3"
+            style={{ lineHeight: 'normal' }}
+          >
+            Sync&Cha
+          </h1>
+        </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 animate-shake">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Your Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+              placeholder="Enter your name"
+            />
           </div>
 
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-200 text-sm">
-              {error}
-            </div>
-          )}
+          <button
+            onClick={createRoom}
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl text-white font-medium
+                     bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700
+                     transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            Create New Room <ArrowRight className="ml-2 h-5 w-5" />
+          </button>
 
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <input
-                type="text"
-                placeholder="Enter your name"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-white/50 transition-all"
-              />
-              <input
-                type="password"
-                placeholder="Enter room password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-white/50 transition-all"
-              />
-            </div>
-
-            <button
-              onClick={handleCreateRoom}
-              className="w-full group relative px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl text-white font-medium hover:opacity-90 transition-all overflow-hidden"
-            >
-              <span className="relative flex items-center justify-center gap-2">
-                <UserPlus className="h-5 w-5" />
-                Create Room
-              </span>
-            </button>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 text-white/60">Or</span>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Enter room code"
-                value={roomId}
-                onChange={(e) => setRoomId(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-white/50 transition-all"
-              />
-              <button
-                onClick={handleJoinRoom}
-                className="w-full group relative px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl text-white font-medium hover:opacity-90 transition-all"
-              >
-                <span className="relative flex items-center justify-center gap-2">
-                  Join Room
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
+          <div className="relative">
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-gray-300"></div>{' '}
+              {/* Left side line */}
+              <span className="px-4" style={{ textDecoration: 'none' }}>
+                Or join existing
+              </span>{' '}
+              {/* Text with padding */}
+              <div className="flex-grow border-t border-gray-300"></div>{' '}
+              {/* Right side line */}
             </div>
           </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Room Code
+            </label>
+            <input
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+              placeholder="Enter room code"
+            />
+          </div>
+
+          <button
+            onClick={joinRoom}
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl text-white font-medium
+                     bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700
+                     transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            Join Room <ArrowRight className="ml-2 h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>

@@ -1,19 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home } from './pages/Home';
-import { Game } from './pages/Game';
-import { Layout } from './components/Layout';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import WaitingRoom from './pages/WaitingRoom';
+import GameRoom from './pages/GameRoom';
+import { GameProvider } from './contexts/GameContext';
 
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/game/:roomId" element={<Game />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <BrowserRouter>
+      <GameProvider>
+        <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/waiting/:roomId" element={<WaitingRoom />} />
+            <Route path="/game/:roomId" element={<GameRoom />} />
+          </Routes>
+        </div>
+      </GameProvider>
+    </BrowserRouter>
   );
 }
 
