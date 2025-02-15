@@ -6,30 +6,161 @@ import { supabase } from '../lib/supabase';
 
 const questions = {
   'Fun Facts': [
-    "What's the most unusual food you've ever eaten?",
-    "What's a random skill you have that most people don't know about?",
-    "What's the strangest dream you've ever had?",
-    "What's the most interesting place you've ever visited?",
-    "What's a weird habit you have?",
-    "What's the most adventurous thing you've ever done?",
-    "What's your favorite childhood memory?",
-    "What's the most embarrassing song you love?",
-    "What's the worst fashion choice you've ever made?",
-    "What's a funny nickname you've been given?"
+    "The most cringeworthy thing that's ever happened to you.",
+    "Something on your to-do list that you haven't checked off yet.",
+    "Who you would switch lives with for a day.",
+    "Your favorite holiday and why.",
+    "The weirdest thing you've Googled recently.",
+    "Who you'd have dinner with from history.",
+    "Guilty pleasure show or movie.",
+    "What you'd do if you won the lottery tomorrow.",
+    "The most random talent you have.",
+    "Your most cherished possession."
   ],
   'Would You Rather': [
-    "Would you rather be able to fly or be invisible?",
-    "Would you rather live in the past or the future?",
-    "Would you rather be super strong or super fast?",
-    "Would you rather have unlimited money or unlimited time?",
-    "Would you rather be a famous musician or a famous actor?",
-    "Would you rather live without music or without movies?",
-    "Would you rather be able to speak all languages or play all instruments?",
-    "Would you rather have the ability to read minds or predict the future?",
-    "Would you rather be the funniest person or the smartest person in a room?",
-    "Would you rather travel the world or live in one place in luxury?"
+    "Fly or be invisible?", 
+    "Live in the past or future?", 
+    "Be super strong or super-fast?", 
+    "Have unlimited money or unlimited time?", 
+    "Be a famous musician or famous actor?", 
+    "Live without music or without movies?", 
+    "Speak all languages or play all instruments?", 
+    "Read minds or predict the future?", 
+    "Be the funniest or smartest person in the room?", 
+    "Travel the world or live in one place in luxury?"
   ],
-  // Add more categories and questions...
+  'Personal Preferences': [
+    "How you spend a Saturday afternoon.", 
+    "Are you a morning person or night owl?", 
+    "Sweet or savory snacks?", 
+    "What music do you listen to when you want to relax.", 
+    "Book or movie?", 
+    "Your go-to comfort food.", 
+    "Last TV show you binged.", 
+    "Winter holidays or summer vacations?", 
+    "Nature or shopping mall?", 
+    "Cats, dogs or something else?"
+  ],
+  'Hypothetical Scenarios': [
+    "What skill you'd instantly master."
+    "Past or future?",
+    "What you'd say on stage to thousands?", 
+    "What cuisine you'd eat for the rest of your life?", 
+    "What you'd spend a million dollars on?", 
+    "What you'd ask your future self?", 
+    "What superpower you'd choose?", 
+    "What hobby you'd turn into a career?",
+    "You're switching lives with someone for a week, who would it be and why?",
+    "You're bringing one fictional invention to life, what would it be and how would you use it?"
+  ],
+  'Random Fun': [
+    "The wildest thing you've ever done on a dare.",
+    "The best joke you know.",
+    "If you were a superhero, what your superpower would be.",
+    "The best prank you've ever pulled.",
+    "The weirdest talent you have.",
+    "One best advice you've ever been given.",
+    "Something you've always wanted to try but never had the courage to.",
+    "If you could have dinner with any fictional character, who would it be.",
+    "The strangest thing you've ever collected.",
+    "If you could be famous for one thing, what would it be."
+  ],
+  'Travel & Adventure': [
+    "If you could take a year off to travel, where you'd go first.",
+    "The most interesting place you've been.",
+    "If you could visit any country, where it would be.",
+    "Your idea of the perfect holiday.",
+    "If you could live on a tropical island, would you? Why or why not?",
+    "Your favorite mode of transport.",
+    "If you could travel back in time, what time period you'd visit.",
+    "Your dream road trip.",
+    "If you could live in a foreign country, which one would you choose.",
+    "Beach or mountain?"
+  ],
+  'Life Goals and Ambitions': [
+    "One goal you've set for yourself this year.",
+    "If money were no object, what would you do with your life.",
+    "One skill you'd love to master.",
+    "Do you live by the plan or go with the flow?",
+    "One thing you've always wanted to learn but never got around to.",
+    "If you could change one thing in the world, what would it be.",
+    "If you could achieve anything in your lifetime, what would it be.",
+    "What success means to you.",
+    "One thing you'd like to have done by the time you're 30.",
+    "How you stay motivated when you're chasing your dreams."
+  ],
+  'Pop Culture': [
+    "Who's your favorite fictional character and why?",
+    "If you could meet any celebrity, who it would be.",
+    "Your favorite movie of all time and why.",
+    "If you could be in any movie, which one you'd be.",
+    "Your favorite song to listen to on repeat.",
+    "The best concert or live event you've ever been to.",
+    "Who's your favorite music artist or band?",
+    "What you last watched and loved.",
+    "Favorite book or book series.",
+    "If you could be a character in any TV show, who you'd be and why."
+  ],
+  'Food and Drinks': [
+    "Breakfast, lunch, or dinner?",
+    "If you could only eat one type of food for the rest of your life, what would it be.",
+    "The strangest food combination you like.",
+    "Savory snacks or sweet ones?",
+    "Your comfort food.",
+    "If you could only drink one thing for the rest of your life, what would it be.",
+    "The most exotic food you've ever had.",
+    "If you could only have one dessert forever, what would it be.",
+    "Do you cook? What's your go-to dish?",
+    "If you had to eat the same thing for dinner every day, what would it be?"
+  ],
+  'Technology and Gadgets': [
+    "The one gadget you can't live without.",
+    "If you could invent any new tech, what would it be.",
+    "Would you rather have no smartphones or no computers?",
+    "If you could have any gadget or tech from a sci-fi movie, what would it be.",
+    "Your favorite app and why.",
+    "Apple or Android?",
+    "Would you rather have a robot that cleans your house or cooks for you?",
+    "If you could be the first to try a new piece of tech, would you?",
+    "Do you think we'll ever have flying cars? Why or why not?",
+    "The coolest app or website you've discovered lately."
+  ],
+  'Dreams and Imagination': [
+    "Ever had a recurring dream? What it was about.",
+    "The weirdest dream you can remember.",
+    "If you could live in a dream world, what would it look like.",
+    "The most beautiful dream you've ever had.",
+    "If you could control your dreams, what you'd do in them.",
+    "Ever had a dream that felt so real you thought it was real life?",
+    "If you could enter any fictional world, which one you'd choose?",
+    "Did you ever dream about someone you know? What happened.",
+    "Do you think dreams mean anything? Why or why not.",
+    "What it would be like to live in a world where dreams come true."
+  ],
+  'Memory Lane': [
+    "Your favorite childhood memory.",
+    "What was your favorite subject at school.",
+    "A funny story your parents or family tell about you.",
+    "The most adventurous thing you did as a kid.",
+    "Who was your childhood hero.",
+    "What was your first job and what you learned from it.",
+    "The most valuable lesson you've learned so far.",
+    "What was the best gift you ever received as a kid.",
+    "Your favorite family tradition.",
+    "The most embarrassing thing that's ever happened to you at school."
+  ],
+  'Chill & Thrills': [
+    "Do you have any irrational fears?",
+    "Your biggest fear in life.",
+    "If you could overcome one fear, which one would it be.",
+    "Do you like horror movies or do they scare you?",
+    "Have you ever faced your biggest fear? What happened?",
+    "If you could get rid of a fear instantly, which one it would be.",
+    "Do fears make you braver?",
+    "The bravest thing you've ever done.",
+    "Are some fears just born in us?",
+    "You are planning to spook someone. How you'd do it."
+  ],
 };
 
 export default function GameRoom() {
