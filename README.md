@@ -5,6 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/aguilar-victor/icebreaker?color=palegreen)](https://github.com/aguilar-victor/icebreaker/blob/main/LICENSE)
 
 Hey there! Welcome to Sync&Chat Icebreaker, a fun web app designed to break the ice and connect with others through engaging questions. Built with React and TailwindCSS for the front end, and TypeScript, Supabase, and Vite as the core tech stack.
+
 <br>
 
 ## Table of Contents
