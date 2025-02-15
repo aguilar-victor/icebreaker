@@ -1,8 +1,9 @@
 # Sync&Chat Icebreaker
 
 <!-- [![Test Passing](https://img.shields.io/github/actions/workflow/status/aguilar-victor/icebreaker/CI.yml)](https://github.com/aguilar-victor/icebreaker/tree/main) -->
-[![Netlify Status](https://api.netlify.com/api/v1/badges/49498d3c-e11c-4512-b438-c52f16ff42f1/deploy-status)](https://app.netlify.com/sites/youricebreaker/deploys)
+[![website.github.io](https://img.shields.io/badge/website-on-palegreen)](https://youricebreaker.netlify.app)
 [![GitHub license](https://img.shields.io/github/license/aguilar-victor/icebreaker?color=palegreen)](https://github.com/aguilar-victor/icebreaker/blob/main/LICENSE)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/49498d3c-e11c-4512-b438-c52f16ff42f1/deploy-status)](https://app.netlify.com/sites/youricebreaker/deploys)
 
 Hey there! Welcome to Sync&Chat Icebreaker, a fun web app designed to break the ice and connect with others through engaging questions. Built with React and TailwindCSS for the front end, and TypeScript, Supabase, and Vite as the core tech stack.
 
@@ -10,10 +11,9 @@ Hey there! Welcome to Sync&Chat Icebreaker, a fun web app designed to break the 
 
 ## Table of Contents
 
-- **[Features](#license)**
+- **[Features](#features)**
 - **[Demo](#demo)**
-- **[Core Functionalities](#core-functionalities)** <!-- - **[Visual Overview](#visual-overview)** -->
-- **[Technologies Used](#technologies-used)**
+- **[Technologies Used](#technologies-used)** <!-- - **[Visual Overview](#visual-overview)** -->
 - **[Contributing](#contributing)**
 - **[License](#license)**
 
