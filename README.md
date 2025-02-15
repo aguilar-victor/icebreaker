@@ -22,7 +22,7 @@ Hey there! Welcome to Sync&Chat Icebreaker, a fun web app designed to break the 
 ## Features
 - **Create and Join Rooms:** Users can create a new room or join an existing room with a code.
 - **Waiting Room:** Users wait for others to join before starting the game.
-- **Game Room & Real-time Interactions:** The game updates in real-time as players join and answer provoking questions.
+- **Game Room:** The game updates in real-time as players join and answer provoking questions.
 - **Responsive Design:** The app is fully responsive and works on desktop and mobile.
 
 <br>
